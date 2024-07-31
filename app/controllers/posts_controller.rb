@@ -7,8 +7,11 @@ class PostsController < ApplicationController
   # access control!! a user can only
   def create
     @post = @forum.posts.new(post_params)  # we create a new post for the current forum
-    @post.save
-    redirect_to @post, notice: "Your post was created."
+    if @post.save
+      redirect_to @post, notice: "Your post was created."
+    else 
+      render :new, status: :unprocessable_entity
+    end
   end
   
   def new
@@ -21,10 +24,12 @@ class PostsController < ApplicationController
   def show    # nothing to do here
   end
   
-  def update
-    @post = Post.new(post_params)
-    @post.save
-    redirect_to @post, notice: "Your post was updated."
+  def update   
+    if @post.update(post_params)
+      redirect_to @post, notice: "Your post was updated."
+    else
+      render :edit, status: :unprocessable_entity
+    end
   end
   
   def destroy
@@ -51,13 +56,13 @@ class PostsController < ApplicationController
   end
 
   def check_access
-    if @post.user_id != session[:current_user][:id]
+    if @post.user_id != session[:current_user]
       redirect_to forums_path, notice: "That's not your post, so you can't change it."
     end
   end
 
   def post_params   # security check, also known as "strong parameters"
-    params[:post][:user_id] = session[:current_user]["id"] 
+    params[:post][:user_id] = session[:current_user]
       # here we have to add a parameter so that the post is associated with the current user
     params.require(:post).permit(:title,:content,:user_id)
   end

@@ -11,11 +11,11 @@
   </head>
 
   <body>
-  <% if @current_user %>
-  <%= "#{@current_user.name} is logged on." %>
-  <% else %>
-  No one is logged on.
-  <% end %>
+    <% if @current_user %>
+      <%= "#{@current_user.name} is logged on." %>
+    <% else %>
+      No one is logged on.
+    <% end %>
     <ul class="ul-bar">
       <li class="dropdown"><span>Forums</span>
           <ul class="dropdown-content ul-bar">
